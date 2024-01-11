@@ -69,15 +69,15 @@ func demonstrateBehaviour(c *gin.Context) {
 		resp["unknownGender"] = true
 	}
 
+	// However null.String supports being marshalled to JSON directly without needing anything special.
+	resp["gender"] = user.Gender
+
 	// Rounding time only works as expected in UTC.
 	// CustomTime dates must be cast before being used.
 	yesterday := time.Now().Truncate(24 * time.Hour).Add(-1 * 24 * time.Hour)
 	if user.LastSeen != nil && time.Time(*user.LastSeen).After(yesterday) {
 		resp["sinceYesterdayMidnight"] = true
 	}
-
-	// null.String supports being marshalled to JSON directly without needing anything special.
-	resp["gender"] = user.Gender
 
 	// Even simple things like string formatting might return errors, but this simple-statement-if helps.
 	if name, err := fmt.Printf("%s %s", user.GivenName, user.FamilyName); err == nil {
